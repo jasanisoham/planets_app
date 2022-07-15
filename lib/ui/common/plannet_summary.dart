@@ -4,7 +4,7 @@ import 'package:planets_animetion_app/ui/common/separator.dart';
 import 'package:planets_animetion_app/ui/detail/detail_page.dart';
 import 'package:planets_animetion_app/ui/text_style.dart';
 
-class PlanetSummary extends StatelessWidget {
+class PlanetSummary extends StatefulWidget {
   final Planet planet;
   final bool horizontal;
 
@@ -13,15 +13,33 @@ class PlanetSummary extends StatelessWidget {
   const PlanetSummary.vertical(this.planet, {Key? key}) : horizontal = false, super(key: key);
 
   @override
+  State<PlanetSummary> createState() => _PlanetSummaryState();
+}
+
+class _PlanetSummaryState extends State<PlanetSummary>
+    with TickerProviderStateMixin {
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 10),
+    vsync: this,
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final planetThumbnail = Container(
       margin: const EdgeInsets.symmetric(vertical: 16.0),
       alignment:
-          horizontal ? FractionalOffset.centerLeft : FractionalOffset.center,
+          widget.horizontal ? FractionalOffset.centerLeft : FractionalOffset.center,
       child: Hero(
-        tag: "planet-hero-${planet.id}",
+        tag: "planet-hero-${widget.planet.id}",
         child: Image(
-          image: AssetImage(planet.image),
+          image: AssetImage(widget.planet.image),
           height: 92.0,
           width: 92.0,
         ),
@@ -32,38 +50,38 @@ class PlanetSummary extends StatelessWidget {
       return Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
         Image.asset(image, height: 12.0),
         Container(width: 8.0),
-        Text(planet.gravity, style: Style.smallTextStyle),
+        Text(widget.planet.gravity, style: Style.smallTextStyle),
       ]);
     }
 
     final planetCardContent = Container(
       margin: EdgeInsets.fromLTRB(
-          horizontal ? 76.0 : 16.0, horizontal ? 16.0 : 42.0, 16.0, 16.0),
+          widget.horizontal ? 76.0 : 16.0, widget.horizontal ? 16.0 : 42.0, 16.0, 16.0),
       constraints: const BoxConstraints.expand(),
       child: Column(
         crossAxisAlignment:
-            horizontal ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+            widget.horizontal ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: <Widget>[
           Container(height: 4.0),
-          Text(planet.name, style: Style.titleTextStyle),
+          Text(widget.planet.name, style: Style.titleTextStyle),
           Container(height: 10.0),
-          Text(planet.location, style: Style.commonTextStyle),
+          Text(widget.planet.location, style: Style.commonTextStyle),
           const Separator(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                  flex: horizontal ? 1 : 0,
+                  flex: widget.horizontal ? 1 : 0,
                   child: _planetValue(
-                      value: planet.distance,
+                      value: widget.planet.distance,
                       image: 'assets/img/ic_distance.png')),
               Container(
-                width: horizontal ? 8.0 : 32.0,
+                width: widget.horizontal ? 8.0 : 32.0,
               ),
               Expanded(
-                  flex: horizontal ? 1 : 0,
+                  flex: widget.horizontal ? 1 : 0,
                   child: _planetValue(
-                      value: planet.gravity,
+                      value: widget.planet.gravity,
                       image: 'assets/img/ic_gravity.png'))
             ],
           ),
@@ -73,8 +91,8 @@ class PlanetSummary extends StatelessWidget {
 
     final planetCard = Container(
       child: planetCardContent,
-      height: horizontal ? 125.0 : 155.0,
-      margin: horizontal
+      height: widget.horizontal ? 125.0 : 155.0,
+      margin: widget.horizontal
           ? const EdgeInsets.only(left: 46.0)
           : const EdgeInsets.only(top: 72.0),
       decoration: BoxDecoration(
@@ -92,10 +110,10 @@ class PlanetSummary extends StatelessWidget {
     );
 
     return GestureDetector(
-        onTap: horizontal
+        onTap: widget.horizontal
             ? () => Navigator.of(context).push(
                   PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => DetailPage(planet),
+                    pageBuilder: (_, __, ___) => DetailPage(widget.planet),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) =>
                             FadeTransition(opacity: animation, child: child),
