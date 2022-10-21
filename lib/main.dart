@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'ui/home/home_page.dart';
+import 'package:planets_animetion_app/screens/details_page.dart';
+import 'package:planets_animetion_app/screens/home_page.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
-       debugShowCheckedModeBanner: false,
-      title: "Planets",
-      home: HomePage(),
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      routes: {
+        "/": (context) => const HomePage(),
+        "details_page": (context) => const DetailsPage(),
+      },
     ),
   );
 }
